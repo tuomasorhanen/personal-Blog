@@ -3,7 +3,12 @@ const nextConfig = {
   experimental: {
     appDir: true,
   },
+  swcMinify: true,
+  reactStrictMode: true,
   images: {
+    unoptimized: false,
+    formats: ['image/avif', 'image/webp'],
+    domains: ['cdn.sanity.io'],
     remotePatterns: [
       {
         protocol: 'https',
@@ -12,6 +17,11 @@ const nextConfig = {
       },
     ],
   },
+  webpack: (config, { buildId, dev, isServer, defaultLoaders, nextRuntime, webpack }) => {
+    config.cache = true;
+    return config;
+  },
+  optimizeFonts: true,
 }
 
 module.exports = nextConfig

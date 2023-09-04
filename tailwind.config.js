@@ -9,6 +9,12 @@ module.exports = {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
+    darkMode: 'class',
+    screens: {
+      sm: '700px', //tablet
+      md: '1100px', //small desktop or laptop
+      lg: '1920px', // bigger desktop
+    },
     extend: {},
   },
   plugins: [],
