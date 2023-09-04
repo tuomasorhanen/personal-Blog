@@ -68,3 +68,9 @@ export async function updateProjectContent(blogPost: { content: any[], name: str
     console.log("New project created.");
   }
 }
+
+export async function deleteProject(id: string) {
+  const client = createClient(clientConfig);
+  await client.delete(id);
+}
+
