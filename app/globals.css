@@ -5,7 +5,7 @@
 @tailwind utilities;
 
 html, body {
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Times New Roman', serif;
 }
 
 /* Heading styles */
@@ -66,3 +66,13 @@ blockquote {
   font-style: italic;
 }
 
+.editor-container {
+  height: 300px;
+  width: 1000px;
+}
+
+@media (max-width: 1000px) {
+  .editor-container {
+    width: 100%;
+  }
+}

@@ -15,25 +15,11 @@ const project = {
       options: { source: "name" }
     },
     {
-      name: "image",
-      title: "Image",
-      type: "image",
-      options: { hotspot: true },
-      fields: [
-        {
-          name: "alt",
-          title: "Alt",
-          type: "string"
-        }
-      ]
-    },
-    {
       name: "content",
       title: "Content",
       type: "array",
       of: [
         { type: "block" },
-        { type: 'image', options: { hotspot: true }, fields: [{ name: 'alt', type: 'string', title: 'Alternative text' }]},
       ]
     }
   ]

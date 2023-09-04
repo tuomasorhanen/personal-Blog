@@ -1,5 +1,5 @@
 import { createClient, groq } from "next-sanity";
-import clientConfig from './config/client-config'
+import clientConfig from './config/client-config';
 import { Page, Project } from "@/types/Types";
 
 export async function getProjects(): Promise<Project[]> {
@@ -13,7 +13,7 @@ export async function getProjects(): Promise<Project[]> {
       url,
       content
     }`
-  )
+  );
 }
 
 export async function getProject(slug: string): Promise<Project> {
@@ -33,35 +33,38 @@ export async function getProject(slug: string): Promise<Project> {
       }
     }`,
     { slug }
-  )
+  );
 }
 
-export async function getPages(): Promise<Page[]> {
-  return createClient(clientConfig).fetch(
-    groq`*[_type == "page"]{
-      _id,
-      _createdAt,
-      title,
-      "slug": slug.current
-    }`
-  )
-}
+export async function updateProjectContent(blogPost: { content: any[], name: string }) {
+  const client = createClient(clientConfig);
 
-export async function getPage(slug: string): Promise<Page> {
-  return createClient(clientConfig).fetch(
-    groq`*[_type == "page" && slug.current == $slug][0]{
-      _id,
-      _createdAt,
-      title,
-      "slug": slug.current,
-      content[]{
-        ...,
-        _type == "image" => {
-          "asset": asset->url
-        },
+  const project = await client.fetch(
+    groq`*[_type == "project" && name == $name][0]`,
+    { name: blogPost.name }
+  );
+
+  const { content, name } = blogPost;
+
+  if (project) {
+    await client
+      .patch(project._id)
+      .set({ content, name })
+      .commit();
+    console.log("Project content updated.");
+  } else {
+    const newProject = {
+      _type: 'project',
+      content,
+      name,
+      slug: {
+        _type: 'slug',
+        current: name.toLowerCase().replace(/\s+/g, '-')
+                   .replace(/ä/g, 'a')
+                   .replace(/ö/g, 'o')
       }
-    }`,
-    { slug }
-  )
+    };
+    await client.create(newProject);
+    console.log("New project created.");
+  }
 }
-

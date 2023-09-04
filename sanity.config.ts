@@ -8,6 +8,7 @@ const config = defineConfig({
   title: "My Personal Website",
   apiVersion: "2023-03-09",
   basePath: "/admin",
+  useCdn: false,
   plugins: [deskTool()],
   schema: { types: schemas }
 })
