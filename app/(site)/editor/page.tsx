@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import EditorComponent from "@/components/Editor";
 import { Delta } from "quill";
 import { updateProjectContent } from "@/sanity/sanity-utils";
@@ -8,26 +8,29 @@ import { v4 as uuidv4 } from 'uuid';
 const Editor = () => {
   const [content, setContent] = useState<any[]>([]);
   const [publishStatus, setPublishStatus] = useState("publish");
-  const [name, setName] = useState("");
-  const [image, setImage] = useState<File | null>(null);
+  const [name, setName] = useState(() => {
+    const savedName = sessionStorage.getItem('editor-title');
+    return savedName ? savedName : "";
+  });
+
+  useEffect(() => {
+    sessionStorage.setItem('editor-title', name);
+  }, [name]);
 
   const handleContentChange = (delta: Delta) => {
     const portableText = quillToPortableText(delta);
     setContent(portableText);
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setImage(file);
-    }
-  };
-
   const publish = async () => {
     setPublishStatus("publishing");
-    await updateProjectContent({ content, name});
+    await updateProjectContent({ content, name });
     setPublishStatus("published");
-    setTimeout(() => setPublishStatus("publish"), 3000);
+    setTimeout(() => {
+      setPublishStatus("publish");
+      sessionStorage.clear(); // Clear session storage
+      location.reload(); // Refresh the page
+    }, 3000);
   };
 
   const getButtonColor = () => {
@@ -42,7 +45,6 @@ const Editor = () => {
         return "bg-gray-700";
     }
   };
-
   return (
     <div className="space-y-4">
       <button

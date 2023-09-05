@@ -39,35 +39,32 @@ export async function getProject(slug: string): Promise<Project> {
 export async function updateProjectContent(blogPost: { content: any[], name: string }) {
   const client = createClient(clientConfig);
 
-  const project = await client.fetch(
-    groq`*[_type == "project" && name == $name][0]`,
+  const projects = await client.fetch(
+    groq`*[_type == "project" && name == $name]`,
     { name: blogPost.name }
   );
 
-  const { content, name } = blogPost;
-
-  if (project) {
-    await client
-      .patch(project._id)
-      .set({ content, name })
-      .commit();
-    console.log("Project content updated.");
-  } else {
-    const newProject = {
-      _type: 'project',
-      content,
-      name,
-      slug: {
-        _type: 'slug',
-        current: name.toLowerCase().replace(/\s+/g, '-')
-                   .replace(/ä/g, 'a')
-                   .replace(/ö/g, 'o')
-      }
-    };
-    await client.create(newProject);
-    console.log("New project created.");
+  if (projects.length > 0) {
+    await Promise.all(projects.map((project: { _id: string; }) => client.delete(project._id)));
+    console.log("Existing projects with the same name deleted.");
   }
+
+  const newProject = {
+    _type: 'project',
+    content: blogPost.content,
+    name: blogPost.name,
+    slug: {
+      _type: 'slug',
+      current: blogPost.name.toLowerCase().replace(/\s+/g, '-')
+                 .replace(/ä/g, 'a')
+                 .replace(/ö/g, 'o')
+    }
+  };
+
+  await client.create(newProject);
+  console.log("New project created.");
 }
+
 
 export async function deleteProject(id: string) {
   const client = createClient(clientConfig);
