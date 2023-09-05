@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import EditorComponent from "@/components/Editor";
 import { Delta } from "quill";
 import { updateProjectContent } from "@/sanity/sanity-utils";
@@ -8,14 +8,7 @@ import { v4 as uuidv4 } from 'uuid';
 const Editor = () => {
   const [content, setContent] = useState<any[]>([]);
   const [publishStatus, setPublishStatus] = useState("publish");
-  const [name, setName] = useState(() => {
-    const savedName = sessionStorage.getItem('editor-title');
-    return savedName ? savedName : "";
-  });
-
-  useEffect(() => {
-    sessionStorage.setItem('editor-title', name);
-  }, [name]);
+  const [name, setName] = useState("");
 
   const handleContentChange = (delta: Delta) => {
     const portableText = quillToPortableText(delta);
@@ -28,8 +21,6 @@ const Editor = () => {
     setPublishStatus("published");
     setTimeout(() => {
       setPublishStatus("publish");
-      sessionStorage.clear(); // Clear session storage
-      location.reload(); // Refresh the page
     }, 3000);
   };
 
@@ -45,6 +36,7 @@ const Editor = () => {
         return "bg-gray-700";
     }
   };
+
   return (
     <div className="space-y-4">
       <button

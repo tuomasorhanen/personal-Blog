@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React from "react";
 import { useQuill } from "react-quilljs";
 import "quill/dist/quill.snow.css";
 import { Delta } from "quill";
@@ -19,26 +19,12 @@ export default function EditorComponent({ onContentChange }: EditorComponentProp
     }
   });
 
-  // Set initial content from sessionStorage
-  useEffect(() => {
-    if (quill) {
-      const savedDelta = sessionStorage.getItem('editor-content');
-      if (savedDelta) {
-        quill.setContents(JSON.parse(savedDelta), 'silent');
-      }
-    }
-  }, [quill]);
-
-  // Listen for changes and update sessionStorage
-  useEffect(() => {
-    if (quill) {
-      quill.on('text-change', () => {
-        const delta = quill.getContents();
-        sessionStorage.setItem('editor-content', JSON.stringify(delta));
-        onContentChange(delta);
-      });
-    }
-  }, [quill, onContentChange]);
+  if (quill) {
+    quill.on('text-change', () => {
+      const delta = quill.getContents();
+      onContentChange(delta);
+    });
+  }
 
   return (
     <div className="editor-container">
@@ -46,4 +32,3 @@ export default function EditorComponent({ onContentChange }: EditorComponentProp
     </div>
   );
 }
-
