@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { useQuill } from "react-quilljs";
 import "quill/dist/quill.snow.css";
 import { Delta } from "quill";
@@ -19,10 +19,19 @@ export default function EditorComponent({ onContentChange }: EditorComponentProp
     }
   });
 
+  useEffect(() => {
+    const storedContent = localStorage.getItem("editorContent");
+    if (quill && storedContent) {
+      const delta = JSON.parse(storedContent);
+      quill.setContents(delta);
+    }
+  }, [quill]);
+
   if (quill) {
     quill.on('text-change', () => {
       const delta = quill.getContents();
       onContentChange(delta);
+      localStorage.setItem("editorContent", JSON.stringify(delta));
     });
   }
 
