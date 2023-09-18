@@ -76,17 +76,22 @@ interface PortableTextBlock {
   _key: string;
   markDefs?: any[];
   style?: any;
+}
 
-
+interface MarkDef {
+  _type: 'link';
+  _key: string;
+  href: string;
 }
 
 function quillToPortableText(delta: Delta): PortableTextBlock[] {
   const blocks: PortableTextBlock[] = [];
   let currentText = '';
   let currentMarks: string[] = [];
+  let markDefs: MarkDef[] = [];
   let style = 'normal';
 
-  if (!delta.ops) return blocks; // Null check here
+  if (!delta.ops) return blocks;
 
   delta.ops.forEach((op, index) => {
     if (typeof op.insert === 'string') {
@@ -100,9 +105,17 @@ function quillToPortableText(delta: Delta): PortableTextBlock[] {
         if (op.attributes.bold) currentMarks.push('strong');
         if (op.attributes.italic) currentMarks.push('em');
         if (op.attributes.underline) currentMarks.push('underline');
+        if (op.attributes.link) {
+          const linkKey = uuidv4();
+          currentMarks.push(linkKey);
+          markDefs.push({
+            _type: 'link',
+            _key: linkKey,
+            href: op.attributes.link,
+          });
+        }
       }
 
-      // Create a new block if we encounter a newline or if it's the last operation
       if (op.insert.endsWith('\n') || index === delta.ops!.length - 1) {
         const block: PortableTextBlock = {
           _type: 'block',
@@ -116,12 +129,14 @@ function quillToPortableText(delta: Delta): PortableTextBlock[] {
               marks: currentMarks,
             },
           ],
-          markDefs: [],
+          markDefs,
         };
+
         blocks.push(block);
         currentText = '';
         currentMarks = [];
-        style = 'normal'; // Reset style
+        markDefs = [];
+        style = 'normal';
       }
     }
   });

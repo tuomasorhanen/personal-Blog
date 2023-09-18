@@ -14,6 +14,7 @@ export default function EditorComponent({ onContentChange }: EditorComponentProp
       toolbar: [
         [{ 'header': ['Normal', '1', '2', '3', '4', '5'] }],
         ['bold', 'italic', 'underline'],
+        ['link'],
         ['clean']
       ]
     }
