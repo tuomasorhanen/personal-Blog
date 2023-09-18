@@ -30,7 +30,7 @@ export default function Home() {
         {projects.map((project) => (
           <div key={project._id} className="pb-2 border-b text-xl flex justify-between">
             <Link href={`/projects/${project.slug}`}>
-              <div className="hover:scale-105">
+              <div className="hover:scale-105 text-black hover:underline underline-black">
                 {project.name}
               </div>
             </Link>

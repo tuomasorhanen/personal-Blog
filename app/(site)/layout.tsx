@@ -19,8 +19,8 @@ export default async function RootLayout({
       </head>
       <body className="max-w-3xl mx-auto px-4 md:px-0 py-10">
         <div className='flex justify-between'>
-          <Link href="/" className="text-lg font-bold">Blogs</Link>
-          <Link href="/editor" className="text-lg font-bold px-3 py-1 rounded-full shadow-sm shadow-gray-500">+ New Blog</Link>
+          <Link href="/" className="text-lg text-black font-bold">Blogs</Link>
+          <Link href="/editor" className="text-lg text-black font-bold px-3 py-1 rounded-full shadow-sm shadow-gray-500">+ New Blog</Link>
           </div>
         <main className="py-20">{children}</main>
       </body>
