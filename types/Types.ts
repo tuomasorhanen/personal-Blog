@@ -11,7 +11,8 @@ export type Page = {
 
 export type Project = {
   _id: string;
-  createdAt: Date;
+  _createdAt: Date;
+  _updatedAt: Date;
   name: string;
   slug: string;
   image: string;

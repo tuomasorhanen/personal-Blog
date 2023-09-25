@@ -10,11 +10,13 @@ export default function Home() {
   useEffect(() => {
     const fetchData = async () => {
       const proj = await getProjects();
-      setProjects(proj);
+      const sortedProj = proj.sort((a, b) => new Date(b._createdAt).getTime() - new Date(a._createdAt).getTime());
+      setProjects(sortedProj);
     };
-
+  
     fetchData();
   }, []);
+  
 
   const handleDelete = async (id: string) => {  // Add type annotation for id
     if (window.confirm('Are you sure you want to delete this post?')) {
